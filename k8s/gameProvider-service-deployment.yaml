@@ -1,0 +1,44 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: games-service
+spec:
+  selector:
+    app: games-service
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: games-service
+spec:
+  selector:
+    matchLabels:
+      app: games-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: games-service
+    spec:
+      containers:
+        - name: games-service
+          image: games-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9090
+          env:
+          - name: DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: username
+          - name: DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: password

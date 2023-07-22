@@ -1,0 +1,39 @@
+server:
+  port: 9090
+
+management:
+  endpoints:
+    web:
+      expose: "*"
+      base-path: "/"
+      path-mapping:
+        prometheus: "metrics"
+      exposure:
+        include: [ "health", "info", "prometheus" ]
+  info:
+    git:
+      mode: full
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/games?createDatabaseIfNotExist=true
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: validate
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        use_sql_comments: false
+        format_sql: false
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    show-sql: false
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+logging:
+  level:
+    root: info
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40logger{39} :: %X{X-Trace-Id} : %m%n%ex{full}"
