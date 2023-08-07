@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-public class MockServerTest {
+public class WiremockServerTest {
 
   private RestTemplate restTemplate;
   private WireMockServer wm;
@@ -24,7 +24,7 @@ public class MockServerTest {
 
   public BiFunction<String, String, String> serverUrl = (String path, String port) -> format(
       baseUrl, port, path);
-  
+
   @BeforeEach
   void setUp() {
     restTemplate = new RestTemplate();
@@ -34,17 +34,16 @@ public class MockServerTest {
 
   @Test
   public void givenWireMockEndpoint_whenGetWithoutParams_thenVerifyRequest() {
-    wm.stubFor(get(urlEqualTo("/api/resource/"))
+    wm.stubFor(get(urlEqualTo("/some/api/resource/"))
         .willReturn(aResponse()
             .withStatus(HttpStatus.OK.value())
             .withHeader("Content-Type", TEXT_PLAIN_VALUE)
             .withBody("test")));
 
-    ResponseEntity response = restTemplate.getForEntity("http://localhost:8080/api/resource/",
+    ResponseEntity response = restTemplate.getForEntity("http://localhost:8080/some/api/resource/",
         String.class);
 
     assertThat("Verify Response Body", response.getBody().toString().contains("test"));
     assertThat("Verify Status Code", response.getStatusCode().equals(HttpStatus.OK));
   }
-
 }

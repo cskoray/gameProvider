@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@CacheConfig(cacheNames = "games")
 public class GameService {
 
   private GameRepository gameRepository;
@@ -32,7 +34,7 @@ public class GameService {
     return gameRepository.save(game);
   }
 
-  @Cacheable("game")
+  @Cacheable(value = "game", key = "#id")
   public Game getGame(Long id) {
 
     log.info("GameService: findById: {}", id);
@@ -48,7 +50,7 @@ public class GameService {
 
   @Caching(evict = {
       @CacheEvict(value = "games", allEntries = true),
-      @CacheEvict(value = "game", allEntries = true)})
+      @CacheEvict(value = "game", key = "#id")})
   public Game updateGame(Long id, Game game) {
 
     log.info("GameService: saveOrUpdate, {}", id);
@@ -61,7 +63,7 @@ public class GameService {
 
   @Caching(evict = {
       @CacheEvict(value = "games", allEntries = true),
-      @CacheEvict(value = "game", allEntries = true)})
+      @CacheEvict(value = "game", key = "#id")})
   public String deleteGame(Long id) {
 
     log.info("GameService: delete, {}", id);

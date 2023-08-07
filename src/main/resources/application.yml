@@ -13,18 +13,32 @@ management:
   info:
     git:
       mode: full
-
 spring:
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+    redis:
+      port: 6379
+      timeout: 60000
+      host: 127.0.0.1
+      database: 0
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: 300000
   datasource:
     url: jdbc:mysql://mysql:3306/games?createDatabaseIfNotExist=true
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    open-in-view: false
     properties:
       hibernate:
         ddl-auto: validate
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         use_sql_comments: false
         format_sql: false
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext

@@ -15,16 +15,21 @@ management:
       mode: full
 
 spring:
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: lazy
   datasource:
     url: jdbc:mysql://localhost:3306/games?createDatabaseIfNotExist=true
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    open-in-view: false
     properties:
       hibernate:
         ddl-auto: validate
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         use_sql_comments: false
         format_sql: false
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext

@@ -1,5 +1,6 @@
 package com.solidcode.gameprovider.integration;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static com.solidcode.gameprovider.exception.ErrorType.GAME_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.solidcode.gameprovider.dto.request.GameRequest;
 import com.solidcode.gameprovider.dto.response.GameResponse;
 import com.solidcode.gameprovider.exception.Error;
@@ -37,6 +39,7 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class GameControllerTest {
 
+  private WireMockServer wm;
   private static TestRestTemplate restTemplate;
   private String baseUrl = "http://localhost";
   private static GameRequest gameRequest;
@@ -60,6 +63,8 @@ class GameControllerTest {
 
   @AfterEach
   public void tearDown() {
+    wm = new WireMockServer(options().port(8080));
+    wm.start();
     gameRepository.deleteAll();
   }
 
